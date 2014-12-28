@@ -1,0 +1,6 @@
+---
+znc_datadir: /srv/znc
+znc_ssl: true
+znc_upstart: true
+znc_port: 8080
+znc_clients: []

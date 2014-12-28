@@ -1,0 +1,3 @@
+---
+znc_config_dir: "{{ znc_datadir }}/configs"
+znc_config_file: "{{ znc_config_dir }}/znc.conf"

@@ -1,0 +1,15 @@
+# znc
+
+description "IRC Bouncer"
+
+start on runlevel [2345]
+
+stop on runlevel [016]
+
+respawn
+respawn limit 10 5
+setuid znc
+
+script
+exec /usr/bin/znc --datadir={{ znc_datadir }} -f
+end script
