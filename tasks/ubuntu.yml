@@ -1,0 +1,41 @@
+---
+- name: Asset Ubuntu version compatibility
+  assert:
+    that:
+      - ansible_distribution_version in [ '12.04','14.04','14.10' ]
+
+- name: Configure for ZNC PPA
+  apt_repository:
+    repo: 'ppa:teward/znc'
+
+- name: Install ZNC
+  apt:
+    name: znc
+
+- name: Install upstart script
+  template:
+    src: upstart.j2
+    dest: /etc/init/znc.conf
+    owner: root
+    group: root
+    mode: 0644
+  register: znc_upstart_installed
+  notify: restart_znc
+  when: znc_service
+  
+- name: Remove upstart script
+  file:
+    dest: /etc/init/znc.conf
+    state: absent
+  when: not znc_service
+
+- command: initctl reload-configuration
+  when: znc_upstart_installed|changed
+
+- name: UFW configuration file
+  template:
+    src: ufw.j2
+    dest: /etc/ufw/applications.d/znc
+    owner: root
+    group: root
+    mode: 0644

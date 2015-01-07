@@ -1,0 +1,21 @@
+---
+- name: Custom certificate
+  copy:
+    dest: "{{ znc_datadir }}/znc.pem"
+    src: "{{ znc_certificate_file }}"
+    owner: znc
+    group: znc
+    mode: 0640
+  notify: restart_znc
+  when: >
+    znc_ssl and
+    znc_certificate_file is defined
+
+- name: Self-signed SSL certificate
+  command: znc --datadir={{ znc_datadir }} --makepem
+  args:
+    creates: "{{ znc_datadir }}/znc.pem"
+  sudo: yes
+  sudo_user: znc
+  notify: restart_znc
+  when: znc_ssl

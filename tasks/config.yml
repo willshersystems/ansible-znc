@@ -1,0 +1,25 @@
+---
+- name: Forcibly remove config
+  file:
+    path: "{{ znc_datadir }}/configs/znc.conf"
+    state: absent
+  when: znc_force_config_refresh
+
+- name: Check for config
+  stat:
+    path: "{{ znc_config_file }}"
+  register: znc_config_stat
+
+- name: Install starting configuration
+  template:
+    src: znc.conf.j2
+    dest: "{{ znc_datadir }}/configs/znc.conf"
+  when: znc_config_stat.stat.exists == false
+  notify: restart_znc
+
+- name: Configuration ownership
+  file:
+    path: "{{ znc_datadir }}/configs/znc.conf"
+    owner: znc
+    group: znc
+    mode: 0600

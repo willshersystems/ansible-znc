@@ -1,6 +1,16 @@
 ---
-znc_datadir: /srv/znc
-znc_ssl: true
-znc_upstart: true
+znc_datadir: /var/lib/znc
+znc_service: true
 znc_port: 8080
-znc_clients: []
+znc_ipv4: true
+znc_ipv6: false
+znc_ssl: true
+znc_user_name: admin
+znc_user_password: 'sha256#cc7c4c7f5a6d137d40ead990630d15e0ba2b4a8fc17b69b9fb3ae09583326d43#y-lQcP*f3TeAar_,,fqq#'
+znc_user_nick: auser
+znc_user_altnick: "{{ znc_user_nick }}_"
+znc_user_ident: "{{ znc_user_nick }}"
+znc_user_realname: Got ZNC?
+znc_user_buffer: 50
+znc_user_autoclearchanbuffer: true
+znc_force_config_refresh: no

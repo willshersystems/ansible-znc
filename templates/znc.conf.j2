@@ -8,25 +8,25 @@
 // But if you feel risky, you might want to read help on /znc saveconfig and /znc rehash.
 // Also check http://en.znc.in/wiki/Configuration
 
-Version = 1.2
+Version = 1.4
 <Listener l>
   Port = {{ znc_port }}
-  IPv4 = {{ znc_ipv4 | default('true') }}
-  IPv6 = {{ znc_ipv6 | default('false') }}
-  SSL = {{ znc_ssl }}
+  IPv4 = {{ 'true' if znc_ipv4 else 'false' }}
+  IPv6 = {{ 'true' if znc_ipv6 else 'false' }}
+  SSL = {{ 'true' if znc_ssl else 'false' }}
 </Listener>
 LoadModule = partyline
 LoadModule = webadmin
 
-<User {{ znc_user | default('admin') }}>
-  Pass       = {{ znc_user_password | default('sha256#cc7c4c7f5a6d137d40ead990630d15e0ba2b4a8fc17b69b9fb3ae09583326d43#y-lQcP*f3TeAar_,,fqq#') }}
+<User {{ znc_user_name }}>
+  Pass       = {{ znc_user_password }}
   Admin      = true
-  Nick       = {{ znc_user_nick | default('someluser') }}
-  AltNick    = {{ znc_user_nick | default('someluser') }}_
-  Ident      = {{ znc_user_ident | default('toor') }}
-  RealName   = {{ znc_user_realname | default('Got ZNC?') }}
-  Buffer     = {{ znc_user_buffer | default('50') }}
-  AutoClearChanBuffer = {{ znc_user_autoclearchanbuffer | default('true') }}
+  Nick       = {{ znc_user_nick }}
+  AltNick    = {{ znc_user_nick }}_
+  Ident      = {{ znc_user_ident }}
+  RealName   = {{ znc_user_realname }}
+  Buffer     = {{ znc_user_buffer }}
+  AutoClearChanBuffer = {{ 'true' if znc_user_autoclearchanbuffer else 'false' }}
   ChanModes  = +stn
   
   LoadModule = chansaver

@@ -2,18 +2,17 @@
 - name: Check OS compatibility
   assert:
     that:
-      - ansible_distribution == 'Ubuntu'
-      - ansible_distribution_version | version_compare('14.04', '>=')
-      
-- name: Install ZNC
-  apt:
-    name: znc
+      - ansible_distribution in [ 'Ubuntu' ]
+
+- name: Ubuntu specific configuration
+  include: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
 
 - name: ZNC user
   user:
     name: znc
     home: "{{ znc_datadir }}"
-    comment: 'ZNC daemon'
+    comment: ZNC daemon
     system: yes
 
 - name: Create directory tree
@@ -24,63 +23,13 @@
     group: znc
     mode: 0750
 
-- name: Check for config
-  stat:
-    path: "{{ znc_config_file }}"
-  register: znc_config_stat
+- include: config.yml
 
-- name: Install starting configuration
-  template:
-    src: znc.conf.j2
-    dest: "{{ znc_datadir }}/configs/znc.conf"
-  when: znc_config_stat.stat.exists == false
+- include: ssl.yml
 
-- name: Configuration ownership
-  file:
-    path: "{{ znc_datadir }}/configs/znc.conf"
-    owner: znc
-    group: znc
-    mode: 0600
-
-- name: Self-signed SSL certificate
-  command: znc --datadir={{ znc_datadir }} --makepem
-  args:
-    creates: "{{ znc_datadir }}/znc.pem"
-  sudo: yes
-  sudo_user: znc
-  when: znc_ssl == true
-
-- name: Install upstart script
-  template:
-    src: upstart.j2
-    dest: /etc/init/znc.conf
-    owner: root
-    group: root
-    mode: 0644
-  register: znc_upstart_installed
-  when: znc_upstart == true
-  
-- command: initctl reload-configuration
-  when: znc_upstart_installed|changed
-
-- name: Start ZNC
-  service:
-    name: znc
-    state: started
-    enabled: yes
-  when: znc_upstart == true
-  
-- name: UFW configuration
-  template:
-    src: ufw.j2
-    dest: /etc/ufw/applications.d/znc
-    owner: root
-    group: root
-    mode: 0644
-
-- name: Allow via firewall
-  ufw:
-    name: znc
-    rule: allow
-    src: "{{ item }}"
-  with_items: znc_clients
+# - name: Start ZNC
+#   service:
+#     name: znc
+#     state: started
+#     enabled: yes
+#   when: znc_service == true
