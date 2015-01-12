@@ -1,7 +1,11 @@
 ZNC
 ===
 
-Install and configure a basic [znc](http://znc.in) server.
+Install and configure a basic [znc](http://znc.in) server and optionally:
+
+* Configure SSL either with a self-signed certificate or the given key and cert.
+* Create an init script via the OS native method.
+* Create configuration to apply firewall rules.
 
 Requirements
 ------------
@@ -13,20 +17,83 @@ Tested on:
 Role Variables
 --------------
 
-* **znc_datadir** is the directory under which ZNC configuration and data is stored. Defaults to */var/lib/znc*.
-* **znc_upstart** is a boolean which controls the installation and starting of an upstart init config. Defaults to *true*.
-* **znc_port** is an integer specificing the TCP port to listen on. Defaults to *8080*.
-* **znc_ipv4** is a boolean, true to listen on IPv4. Defaults to *true*
-* **znc_ipv6** is a boolean, true to listen on IPv6. Defaults to *false*
-* **znc_ssl** is a boolean, true to enable SSL, false to disable. True will general a self-signed SSL certification if a certificate does not already exist. Defaults to *true*.
-* **znc_user_name** ZNC user name. Defaults to *admin*
-* **znc_user_password** ZNC user password. Defaults to SHA256 hash of password 'admin'.
-* **znc_user_nick** ZNC admin users nick name. Defaults to *auser*
-* **znc_user_altnick** ZNC admin users alt nick name. Defaults to **znc_user_nick_** (e.g. auser_)
-* **znc_user_ident** ZNC admin users ident. Defaults to the nick.
-* **znc_user_realname** ZNC admin users real name. Defaults to *Administrator*
-* **znc_user_buffer** Channel buffer size. Defaults to *50*
-* **znc_user_autoclearchanbuffer** auto clear the channel buffer on connect. Defaults to *true*
+* znc_datadir
+
+Data directory for ZNC. Defaults to  */var/lib/znc*
+
+* znc_service
+
+Configure a ZNC service, starting ZNC at boot. Defaults to *true*
+
+* znc_force_config_refresh
+
+If true, replace the ZNC configuration if it already exists. By default, the
+configuration file is only generated if it doesn't exist. Defaults to *false*
+
+### Networking
+
+* znc_port
+
+Port ZNC will listen on. Defaults to *8080*
+
+* znc_ipv4
+
+Listen on IPv4 addresses. Defaults to *true*
+
+* znc_ipv6
+
+Listen on IPv6 addresses. Defaults to *false*
+
+### SSL
+
+* znc_ssl
+
+Enable SSL. If this is `true` and `znc_certificate_file` is not set, a
+self-signed certificate will be generated. Defaults to *true*
+
+* znc_ssl_certificate_file
+
+Local path to an SSL certificate file which contains the SSL key followed by
+certificate, then any intermediate certificates. Not defined by default
+
+### Initial User
+
+* znc_user_name
+
+Default admin users name. Defaults to *admin*
+
+* znc_user_password
+
+The given users password in the form ZNC accepts in its password file. Can be
+generated with `znc --makepass`. Defaults to
+*sha256#cc7c4c7f5a6d137d40ead990630d15e0ba2b4a8fc17b69b9fb3ae09583326d43#y-lQcP*f3TeAar_,,fqq#*,
+which is admin
+
+* znc_user_nick
+
+Defaults user IRC nickname. Defaults to *auser*.
+
+* znc_user_altnick
+
+Alternative IRC nickname for the default user. Defaults to *{{ znc_user_nick }}_*
+i.e. `auser_`
+
+* znc_user_ident
+
+IDENT string. Defaults to *{{ znc_user_nick }}*, i.e. `auser`
+
+* znc_user_realname
+
+ZNC user's real name. Defaults to *Got ZNC?*
+
+* znc_user_buffer
+
+Number of lines to store in user's channel buffers when not connected to ZNC.
+Defaults to *50*
+
+* znc_user_autoclearchanbuffer
+
+Clear the user's buffer on connection. Defaults to *true*
 
 Dependencies
 ------------
@@ -36,7 +103,16 @@ None
 Example Playbook
 ----------------
 
-TBD
+```yaml
+---
+- hosts: znc
+  sudo: true
+  roles:
+    willshersystems.znc:
+      znc_ssl_certificate_file: files/znc.pem
+      znc_user_name: bob
+      znc_user_nick: bob
+```
 
 License
 -------
@@ -47,3 +123,5 @@ Author Information
 ------------------
 
 Matt Willsher, matt@willsher.systems
+
+(c)2015 Willsher Systems
