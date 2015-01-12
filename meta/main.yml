@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Matt Willsher
+  description: OpenSSH SSH deamon configuration
+  company: Willsher Systems
+  license: LGPLv3
+  min_ansible_version: 1.8
+  platforms:
+  - name: Ubuntu
+    versions:
+    - precise
+    - trusty
+    - utopic
+  categories:
+  - networking
+dependencies: []
