@@ -6,6 +6,7 @@ znc_ipv4: true
 znc_ipv6: false
 znc_ssl: true
 znc_user_name: admin
+# Default password is admin
 znc_user_password: 'sha256#cc7c4c7f5a6d137d40ead990630d15e0ba2b4a8fc17b69b9fb3ae09583326d43#y-lQcP*f3TeAar_,,fqq#'
 znc_user_nick: auser
 znc_user_altnick: "{{ znc_user_nick }}_"
