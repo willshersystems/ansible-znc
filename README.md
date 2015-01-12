@@ -108,10 +108,11 @@ Example Playbook
 - hosts: znc
   sudo: true
   roles:
-    willshersystems.znc:
-      znc_ssl_certificate_file: files/znc.pem
-      znc_user_name: bob
-      znc_user_nick: bob
+  - role: willshersystems.znc
+    znc_ssl_certificate_file: files/znc.pem
+    znc_user_name: bob
+    znc_user_nick: bob
+    tags: znc
 ```
 
 License
