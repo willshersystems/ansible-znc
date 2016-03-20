@@ -27,9 +27,3 @@
 
 - include: ssl.yml
 
-# - name: Start ZNC
-#   service:
-#     name: znc
-#     state: started
-#     enabled: yes
-#   when: znc_service == true
