@@ -106,7 +106,7 @@ Example Playbook
 ```yaml
 ---
 - hosts: znc
-  sudo: true
+  become: yes
   roles:
   - role: willshersystems.znc
     znc_ssl_certificate_file: files/znc.pem

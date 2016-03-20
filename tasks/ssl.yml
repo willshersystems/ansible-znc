@@ -15,7 +15,7 @@
   command: znc --datadir={{ znc_datadir }} --makepem
   args:
     creates: "{{ znc_datadir }}/znc.pem"
-  sudo: yes
-  sudo_user: znc
+  become: yes
+  become_user: znc
   notify: restart_znc
   when: znc_ssl
