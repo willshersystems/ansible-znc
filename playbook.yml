@@ -1,0 +1,8 @@
+---
+- hosts: znc1
+  become: yes
+  roles:
+    - willshersystems.znc
+  vars:
+    # Default password is admin
+    znc_user_password: 'sha256#cc7c4c7f5a6d137d40ead990630d15e0ba2b4a8fc17b69b9fb3ae09583326d43#y-lQcP*f3TeAar_,,fqq#'

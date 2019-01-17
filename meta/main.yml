@@ -4,13 +4,13 @@ galaxy_info:
   description: ZNC, an advanced IRC bouncer
   company: Willsher Systems
   license: LGPLv3
-  min_ansible_version: 1.8
+  min_ansible_version: 2.4
   platforms:
   - name: Ubuntu
     versions:
-    - precise
-    - trusty
-    - utopic
+    - xenial
+    - bionic
+    - cosmic
   categories:
   - networking
 dependencies: []

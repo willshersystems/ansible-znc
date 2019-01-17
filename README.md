@@ -12,7 +12,7 @@ Requirements
 
 Tested on:
 
-* Ubuntu 14.04 LTS
+* Ubuntu 18.04 LTS
 
 Role Variables
 --------------
@@ -56,6 +56,12 @@ self-signed certificate will be generated. Defaults to *true*
 Local path to an SSL certificate file which contains the SSL key followed by
 certificate, then any intermediate certificates. Not defined by default
 
+### Service
+
+* znc_system_modules
+
+The list of modules to load when starting the service.
+
 ### Initial User
 
 * znc_user_name
@@ -94,6 +100,17 @@ Defaults to *50*
 * znc_user_autoclearchanbuffer
 
 Clear the user's buffer on connection. Defaults to *true*
+
+* znc_user_settings
+
+A dict of the key/value pairs to apply to the user. Defaults to applying
+Buffer, AutoClearChanBuffer and ChanModes. If this variable is overridden,
+then the above-mentioned settings will not be applied unless the override
+includes them.
+
+* znc_user_modules
+
+The initial user modules to load.
 
 Dependencies
 ------------

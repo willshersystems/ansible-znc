@@ -2,7 +2,7 @@
 - name: Asset Ubuntu version compatibility
   assert:
     that:
-      - ansible_distribution_version in [ '12.04','14.04','14.10' ]
+      - ansible_distribution_version in [ '16.04','18.04','18.10' ]
 
 - name: Configure for ZNC PPA
   apt_repository:
@@ -12,27 +12,24 @@
   apt:
     name: znc
 
-- name: Install upstart script
+- name: Deploy systemd unit
   template:
-    src: upstart.j2
-    dest: /etc/init/znc.conf
+    src: znc.service.j2
+    dest: /etc/systemd/system/znc.service
     owner: root
     group: root
     mode: 0644
-  register: znc_upstart_installed
   notify: restart_znc
-  when: znc_service
-  
-- name: Remove upstart script
+  when: znc_service | bool
+
+- name: Remove systemd unit
   file:
-    dest: /etc/init/znc.conf
+    dest: /etc/systemd/system/znc.service
     state: absent
-  when: not znc_service
+  notify: reload_systemd
+  when: not (znc_service | bool)
 
-- command: initctl reload-configuration
-  when: znc_upstart_installed|changed
-
-- name: UFW configuration file
+- name: Deploy UFW configuration file
   template:
     src: ufw.j2
     dest: /etc/ufw/applications.d/znc

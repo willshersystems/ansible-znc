@@ -1,17 +1,38 @@
 ---
+# Allow the znc.conf to be rewritten
+znc_force_config_refresh: no
+
+# System configuration
 znc_datadir: /var/lib/znc
 znc_service: true
 znc_port: 8080
 znc_ipv4: true
 znc_ipv6: false
 znc_ssl: true
+
+# System modules to load
+znc_system_modules:
+- partyline
+- webadmin
+
+# Admin user configuration
 znc_user_name: admin
-# Default password is admin
-znc_user_password: 'sha256#cc7c4c7f5a6d137d40ead990630d15e0ba2b4a8fc17b69b9fb3ae09583326d43#y-lQcP*f3TeAar_,,fqq#'
 znc_user_nick: auser
 znc_user_altnick: "{{ znc_user_nick }}_"
 znc_user_ident: "{{ znc_user_nick }}"
 znc_user_realname: Got ZNC?
 znc_user_buffer: 50
 znc_user_autoclearchanbuffer: true
-znc_force_config_refresh: no
+
+# Admin user settings
+znc_user_settings:
+  Buffer: "{{ znc_user_buffer }}"
+  AutoClearChanBuffer: "{{ (znc_user_autoclearchanbuffer | bool) | lower }}"
+  ChanModes: "+stn"
+
+# Admin user modules to load
+znc_user_modules:
+- chansaver
+- controlpanel
+- perform
+- webadmin
