@@ -1,14 +1,18 @@
 ---
+- name: Check that znc_user_password has been provided
+  assert:
+    that:
+      - znc_user_password is defined
+
 - name: Check OS compatibility
   assert:
     that:
       - ansible_distribution in [ 'Ubuntu' ]
 
-- name: Ubuntu specific configuration
-  include: ubuntu.yml
-  when: ansible_distribution == 'Ubuntu'
+- name: Include distribution specific configuration
+  include_tasks: "{{ ansible_distribution | lower }}.yml"
 
-- name: ZNC user
+- name: Add ZNC user
   user:
     name: znc
     home: "{{ znc_datadir }}"
@@ -23,7 +27,48 @@
     group: znc
     mode: 0750
 
-- include: config.yml
+- name: Check for existing config file
+  stat:
+    path: "{{ znc_config_file }}"
+  register: znc_config_stat
 
-- include: ssl.yml
+- name: Deploy the configuration file
+  when: (not znc_config_stat.stat.exists) or (znc_force_config_refresh | bool)
+  block:
+    - name: Discover the znc version
+      shell: >-
+        znc --version | head -n 1 | sed 's/^ZNC \([0-9\.]*\)+.*$/\1/'
+      args:
+        executable: /bin/bash
+      changed_when: false
+      register: _znc_version
 
+    - name: Deploy configuration file
+      template:
+        src: znc.conf.j2
+        dest: "{{ znc_datadir }}/configs/znc.conf"
+        owner: znc
+        group: znc
+        mode: 0600
+      notify: restart_znc
+
+- name: Deploy SSL certificate
+  when: znc_ssl | bool
+  block:
+    - name: Deploy custom certificate
+      copy:
+        dest: "{{ znc_datadir }}/znc.pem"
+        src: "{{ znc_ssl_certificate_file }}"
+        owner: znc
+        group: znc
+        mode: 0640
+      notify: restart_znc
+      when: znc_ssl_certificate_file is defined
+
+    - name: Self-signed SSL certificate
+      command: znc --datadir={{ znc_datadir }} --makepem
+      args:
+        creates: "{{ znc_datadir }}/znc.pem"
+      become: yes
+      become_user: znc
+      notify: restart_znc

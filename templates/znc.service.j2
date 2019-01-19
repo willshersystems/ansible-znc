@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+[Unit]
+Description=ZNC, an advanced IRC bouncer
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/znc --datadir={{ znc_datadir }} -f
+Restart=on-failure
+User=znc
+{% if znc_port | int <= 1024 %}
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target
