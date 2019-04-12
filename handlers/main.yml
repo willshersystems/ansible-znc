@@ -8,4 +8,4 @@
 
 - name: reload_systemd
   systemd:
-    daemond_reload: yes
+    daemon_reload: yes
