@@ -1,5 +1,5 @@
 ---
-- name: Asset Ubuntu version compatibility
+- name: Assert Ubuntu version compatibility
   assert:
     that:
       - ansible_distribution_version in [ '16.04','18.04','18.10' ]

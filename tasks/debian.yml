@@ -1,8 +1,8 @@
 ---
-- name: Asset Debian version compatibility
-  assert:
-    that:
-      - ansible_distribution_version in [ '7', '8', '9', '10' ]
+# - name: Asset Debian version compatibility
+#   assert:
+#     that:
+#       - ansible_distribution_version in [ '7', '8', '9', '10' ]
 
 - name: Configure for ZNC PPA
   apt_repository:
