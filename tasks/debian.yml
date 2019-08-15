@@ -1,0 +1,38 @@
+---
+- name: Asset Debian version compatibility
+  assert:
+    that:
+      - ansible_distribution_version in [ '7', '8', '9', '10' ]
+
+- name: Configure for ZNC PPA
+  apt_repository:
+    repo: 'ppa:teward/znc'
+
+- name: Install ZNC
+  apt:
+    name: znc
+
+- name: Deploy systemd unit
+  template:
+    src: znc.service.j2
+    dest: /etc/systemd/system/znc.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_znc
+  when: znc_service | bool
+
+- name: Remove systemd unit
+  file:
+    dest: /etc/systemd/system/znc.service
+    state: absent
+  notify: reload_systemd
+  when: not (znc_service | bool)
+
+- name: Deploy UFW configuration file
+  template:
+    src: ufw.j2
+    dest: /etc/ufw/applications.d/znc
+    owner: root
+    group: root
+    mode: 0644

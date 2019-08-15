@@ -7,7 +7,7 @@
 - name: Check OS compatibility
   assert:
     that:
-      - ansible_distribution in [ 'Ubuntu' ]
+      - ansible_distribution in [ 'Ubuntu' ] or ansible_distribution == 'Debian'
 
 - name: Include distribution specific configuration
   include_tasks: "{{ ansible_distribution | lower }}.yml"
