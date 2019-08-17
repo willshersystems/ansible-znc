@@ -1,12 +1,17 @@
 ---
-- name: Assert Ubuntu version compatibility
-  assert:
-    that:
-      - ansible_distribution_version in [ '16.04','18.04','18.10' ]
+
+- name: install python apt dependacies
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - python-apt
+    - python3-apt
 
 - name: Configure for ZNC PPA
   apt_repository:
     repo: 'ppa:teward/znc'
+    codename: xenial
 
 - name: Install ZNC
   apt:
