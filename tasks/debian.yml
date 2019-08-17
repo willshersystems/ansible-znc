@@ -11,7 +11,7 @@
 - name: Configure for ZNC PPA
   apt_repository:
     repo: 'ppa:teward/znc'
-    codename: xenial
+    codename: eoan
 
 - name: Install ZNC
   apt:
